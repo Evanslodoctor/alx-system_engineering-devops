@@ -1,4 +1,1 @@
-# 0x17. Web stack debugging #3
-
-## Description
-The aim of this project is to find out what is making a container running Wordpress on Apache2 respond with a 500 status code.
+0. **Strace is your friend** - Using `strace`, find out why Apache is returning a 500 error. Once you find the issue, fix it and then automate it using Puppet (instead of using Bash as you were previously doing)

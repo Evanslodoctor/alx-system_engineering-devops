@@ -1,11 +1,2 @@
-# 0x14. Mysql
-
-## Description
-This project sets up a MySQL primary-replica cluster on our own servers.
-
-## Table of contents
-Files | Description
------ | -----------
-[4-mysql_configuration_primary](./4-mysql_configuration_primary) | MySQL primary configuration
-[4-mysql_configuration_replica](./4-mysql_configuration_replica) | MySQL replica configuration
-[5-mysql_backup](./5-mysql_backup) | Bash script that generates a MySQL dump and creates a compressed archive out of it
+# __0x14. MySQL__
+![Alt text](https://s3.amazonaws.com/intranet-projects-files/holbertonschool-sysadmin_devops/280/KkrkDHT.png)
