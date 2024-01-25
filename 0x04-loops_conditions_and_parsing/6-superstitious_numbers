@@ -2,15 +2,13 @@
 # displays numbers from 1 to 20.
 
 COUNTER=1
-while [ $COUNTER -le 20]
+while [ $COUNTER -le 20 ]
 do
-    while [ $COUNTER -le 20 ]
-do
-  echo "$COUNTER"
-  case $COUNTER in
-    "4") echo "bad luck from China";;
-    "9") echo "bad luck from Japan";;
-    "17") echo "bad luck from Italy";;
-  esac
-  (( COUNTER++ ))
+    echo "$COUNTER"
+    case $COUNTER in
+        "4") echo "bad luck from China";;
+        "9") echo "bad luck from Japan";;
+        "17") echo "bad luck from Italy";;
+    esac
+    ((COUNTER++))
 done
