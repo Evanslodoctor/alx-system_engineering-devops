@@ -4,12 +4,12 @@
 COUNTER=1
 while [ $COUNTER -ne 11 ]
 do
-    if [ $COUNTER -eq 4];then
+    if [ $COUNTER -eq 4 ]; then
         echo "bad luck"
-    elif [ $COUNTER -eq 8 ];then
+    elif [ $COUNTER -eq 8 ]; then
         echo "good luck"
     else
         echo "Best School"
     fi
-      ((COUNTER++))
+    ((COUNTER++))
 done
