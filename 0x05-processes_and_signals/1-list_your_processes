@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
-# Parse Apache logs and display visitor IP along with HTTP status code using awk.
+#!/bin/bash
 
-awk '{print $1, $9}' apache-access.log
+# Display a list of currently running processes in a user-oriented format with hierarchy.
+ps -e --forest -o user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,command
