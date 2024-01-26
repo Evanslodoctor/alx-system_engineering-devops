@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
-# Create the file /var/run/holbertonscript.pid containing its PID
-sudo touch /var/run/holbertonscript.pid
-sudo bash -c 'echo $$ > /var/run/holbertonscript.pid'
+PID_FILE="/var/run/myscript.pid"
+
+# Create the file /var/run/myscript.pid containing its PID
+echo $$ | sudo tee "$PID_FILE"
 
 # Set up signal handlers
-trap 'echo "I hate the kill command"; sudo rm /var/run/holbertonscript.pid; exit' SIGTERM
+trap 'echo "I hate the kill command"; rm "$PID_FILE"; exit' SIGTERM
 trap 'echo "Y U no love me?!"' SIGINT
-trap 'sudo rm /var/run/holbertonscript.pid; exit' SIGQUIT
+trap 'rm "$PID_FILE"; exit' SIGQUIT
 
 # Display 'To infinity and beyond' indefinitely
 while true
@@ -15,3 +16,4 @@ do
     echo "To infinity and beyond"
     sleep 2
 done
+
