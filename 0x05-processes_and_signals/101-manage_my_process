@@ -1,25 +1,46 @@
-#!/usr/bin/env bash
-# Manages 'manage_my_process'
+#!/bin/bash
 
-if [ "${1}" == "start" ]
-then
-    ./manage_my_process &
-    touch /var/run/my_process.pid
-    echo "$!" > /var/run/my_process.pid
-    echo "manage_my_process started"
-elif [ "${1}" == "stop" ]
-then
-    echo "manage_my_process stopped"
-    kill "$(cat /var/run/my_process.pid)"
-    rm /var/run/my_process.pid
-elif [ "${1}" == "restart" ]
-then
-    kill "$(cat /var/run/my_process.pid)"
-    rm /var/run/my_process.pid
-    ./manage_my_process &
-    touch /var/run/my_process.pid
-    echo "$!" > /var/run/my_process.pid
-    echo "manage_my_process restarted"
-else
-    echo "Usage: manage_my_process {start|stop|restart}"
-fi
+SCRIPT="./manage_my_process"
+PID_FILE="/var/run/my_process.pid"
+
+case "$1" in
+    start)
+        if [ -f "$PID_FILE" ]; then
+            echo "manage_my_process is already running."
+        else
+            $SCRIPT &
+            echo "$!" > $PID_FILE
+            echo "manage_my_process started"
+        fi
+        ;;
+
+    stop)
+        if [ -f "$PID_FILE" ]; then
+            PID=$(cat $PID_FILE)
+            kill $PID
+            rm $PID_FILE
+            echo "manage_my_process stopped"
+        else
+            echo "manage_my_process is not running."
+        fi
+        ;;
+
+    restart)
+        if [ -f "$PID_FILE" ]; then
+            PID=$(cat $PID_FILE)
+            kill $PID
+            rm $PID_FILE
+            echo "manage_my_process stopped"
+        fi
+        $SCRIPT &
+        echo "$!" > $PID_FILE
+        echo "manage_my_process restarted"
+        ;;
+
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0
