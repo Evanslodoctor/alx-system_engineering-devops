@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-# Displays the current running processes, in a user-oriented format.
+# Display a list of currently running processes with hierarchy.
 
-ps -faux
+ps axjf
