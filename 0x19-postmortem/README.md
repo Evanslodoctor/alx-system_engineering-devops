@@ -1,19 +1,30 @@
-#__Postmortem__
+# Postmortem Report: Outage Incident
 
-Right about 0600hrs when I saw the 0x19 Web Debugging task in my email, I was excited, they always make me feel like a hacker and I couldnt wait to see what it was this time. The issue was a dissappoiniting 500 error everytime I made a GET request to an isolated Ubuntu 14.04 container running an Apache web server hosting a Holberton Wordpress site. What caused the outage? That was the big question.
+## Issue Summary:
+- **Duration:** May 7, 2024, 10:00 AM - May 7, 2024, 2:00 PM (UTC)
+- **Impact:** The user authentication service experienced intermittent failures, leading to login issues for approximately 30% of users.
+- **Root Cause:** Database connection pool exhaustion due to unexpected spike in user traffic.
 
-## Debugging
-I had to get my debugging tool box, (yes I have one of those), got my debug partner who is also my infamous rubber duck, T-rex and set myself up to find out what caused this outage. 
-I started by checking the current http processes with __ps aux | grep http__ command, gave T-rex a quick look but he gave me a blank stare, clearly we had made no progress.
-I had just learnt about tmux, this command line splitting tool that makes it easy to have multiple instances running. I used __strace__ on an apache process that i found when i ran the __top__ command. 
-On a third window, I curled local host to get an overview of the ongoing process while Apache serves me a 500 error.
-I figure out that there was a -1 return in one of the process, __lstat("/var/www/html/wp-includes/class-wp-locale.phpp", 0x7fff71f2f1d0)__. I had found my culprit. The extra p didnt make any sense in the file extexnsion, unless it was a puppet file.
-So I tried to find this function within the var/www/html files using the grep command, fixed the typo, and went on to try the Holberton endpoint with curl from the command line, and, Success!
+## Timeline:
+- **9:55 AM:** Monitoring alert triggered due to increased latency in user authentication requests.
+- **10:00 AM:** Issue officially detected as users began reporting login failures.
+- **10:05 AM:** Engineering team notified and investigation initiated.
+- **10:15 AM:** Assumptions made that the issue might be related to database overload due to recent feature deployment.
+- **10:30 AM:** Database queries optimized and cache configuration adjusted as initial mitigation steps.
+- **11:00 AM:** Issue persists despite initial actions; misleading assumption regarding cache performance explored.
+- **11:30 AM:** Incident escalated to database administration team for further analysis.
+- **12:00 PM:** Database connection pool exhaustion identified as the root cause.
+- **12:30 PM:** Database connection pool settings adjusted to accommodate increased traffic.
+- **1:30 PM:** User authentication service restored to normal operation.
 
-## Prevention
-This outage was caused by an application error. Such outages moving forward, please keep the following in mind:
+## Root Cause and Resolution:
+- **Root Cause:** Unexpected spike in user traffic led to database connection pool exhaustion, causing authentication service failures.
+- **Resolution:** Database connection pool settings were increased to handle higher traffic loads, restoring service functionality.
 
-* Always Test the application before deploying. Something about tests we dont like but they save us a lot of time in the future.
-* Monitoring the server with tools like Datadog to get real time information on how your servers are doing.
-
-The debugging task required us to write a puppet manifest, .phpp, sorry, .pp file. The typo is getting to me, I should probably monitor myself. Anyway, my manifest removes any extra p for files with such errors.
+## Corrective and Preventative Measures:
+- **Improvements/Fixes:** Enhance monitoring to proactively detect traffic spikes, optimize database queries for efficiency, implement auto-scaling for database resources.
+- **Tasks:**
+  1. Implement real-time monitoring for database connection pool usage.
+  2. Conduct load testing to simulate traffic spikes and validate database scalability.
+  3. Review cache configuration to optimize performance during peak usage.
+  4. Document incident response procedures for similar scenarios.
