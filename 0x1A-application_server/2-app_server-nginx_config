@@ -1,5 +1,14 @@
+#!/usr/bin/env bash
 # Configures Nginx to serve the route /airbnb-onepage/ from AirBnB_clone_v2.
 
+# Check if nginx configuration directory exists
+if [ ! -d /etc/nginx/sites-available ]; then
+    echo "Error: Nginx configuration directory not found." >&2
+    exit 1
+fi
+
+# Create a new configuration file for the site
+cat << EOF | sudo tee /etc/nginx/sites-available/airbnb-onepage
 server {
     # Listen on port 80
     listen      80 default_server;
@@ -23,3 +32,16 @@ server {
         internal;
     }
 }
+EOF
+
+# Check nginx configuration syntax
+if ! nginx -t; then
+    echo "Error: Nginx configuration test failed." >&2
+    exit 1
+fi
+
+# Enable the site by creating a symbolic link
+sudo ln -s /etc/nginx/sites-available/airbnb-onepage /etc/nginx/sites-enabled/
+
+# Restart Nginx service
+sudo service nginx restart
