@@ -1,47 +1,27 @@
-#!/usr/bin/env bash
-# Configures Nginx to serve the route /airbnb-onepage/ from AirBnB_clone_v2.
-
-# Check if nginx configuration directory exists
-if [ ! -d /etc/nginx/sites-available ]; then
-    echo "Error: Nginx configuration directory not found." >&2
-    exit 1
-fi
-
-# Create a new configuration file for the site
-cat << EOF | sudo tee /etc/nginx/sites-available/airbnb-onepage
 server {
-    # Listen on port 80
-    listen      80 default_server;
-    listen      [::]:80 default_server ipv6only=on;
-
-    # Use IP of server as domain name
-    server_name 104.196.168.90;
-
-    # Customize HTTP response header
-    add_header  X-Served-By 375-web-01;
-
-    # Serve /airbnb-onepage/ route from AirBnB_clone_v2
-    location = /airbnb-onepage/ {
-        proxy_pass http://127.0.0.1:5000/airbnb-onepage/;
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    add_header X-Served-By 21966-web-01;
+    root   /var/www/html;
+    index  index.html index.htm;
+    location / {
+        root /var/www/html;
+        index index.html index.nginx-debian.html;
     }
-
-    # 404 error page
+    location /hbnb_static {
+        alias /data/web_static/current;
+        index index.html index.htm;
+    }
+    location /redirect_me {
+        return 301 http://cuberule.com/;
+    }
     error_page 404 /404.html;
     location /404 {
-        root /var/www/html;
-        internal;
+      root /var/www/html;
+      internal;
+    }
+    location /airbnb-onepage/ {
+        include proxy_params;
+        proxy_pass http://127.0.0.1:5000;
     }
 }
-EOF
-
-# Check nginx configuration syntax
-if ! nginx -t; then
-    echo "Error: Nginx configuration test failed." >&2
-    exit 1
-fi
-
-# Enable the site by creating a symbolic link
-sudo ln -s /etc/nginx/sites-available/airbnb-onepage /etc/nginx/sites-enabled/
-
-# Restart Nginx service
-sudo service nginx restart
